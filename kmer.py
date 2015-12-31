@@ -27,6 +27,13 @@ def kmers(text, k):
     :param k: the size of the kmers
     :return:
     """
-    stop = len(text) - k
-    for i in range(0, stop + 1):
-        yield text[i:i + k]
+
+    if type(text) == 'string':
+        stop = len(text) - k
+        for i in range(0, stop + 1):
+            yield text[i:i + k]
+    else:
+        for seq in text:
+            stop = len(seq) - k
+            for i in range(0, stop + 1):
+                yield seq[i:i + k]
