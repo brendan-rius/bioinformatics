@@ -29,7 +29,7 @@ def motif_entropy(motifs):
         """
         vector_entropy = 0
         for x in vector:
-            if x != 0:  # We avoid tto compute log_2(0), and we consider it to be zero
+            if x != 0:  # We avoid to compute log_2(0), and we consider it to be zero
                 vector_entropy += x * math.log(x, 2)
         return -vector_entropy
 
