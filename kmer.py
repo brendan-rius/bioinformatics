@@ -1,3 +1,6 @@
+import itertools
+
+
 def kmer(text, position, k):
     """
     Find the k-mer at a certain position in a text
@@ -18,6 +21,16 @@ def kmer(text, position, k):
                                                                                                                  position,
                                                                                                                  len_text))
     return text[position:position + k]
+
+
+def all_kmers(k):
+    """
+    Generate all the possible k-mers
+    :param k: the size of the k-mers
+    """
+    base = ['A', 'T', 'G', 'C']
+    for p in itertools.product(base, repeat=k):
+        yield ''.join(p)
 
 
 def kmers(text, k):
