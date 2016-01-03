@@ -25,3 +25,13 @@ class TestHamming_distance(TestCase):
         Test the case when the second string is bigger than the first one
         """
         self.assertEqual(hamming_distance("GATTCTCA", "GCAAAGACGCTGACCAA"), 3)
+
+    def test_hamming_distance_list(self):
+        """
+        Test the case when the second parameter is a list
+        """
+        self.assertEqual(hamming_distance("AAA", ['TTACCTTAAC',
+                                                  'GATATCTGTC',
+                                                  'ACGGCGTTCG',
+                                                  'CCCTAAAGAG',
+                                                  'CGTCAGAGGT']), 5)
