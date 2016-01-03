@@ -27,15 +27,17 @@ def all_kmers(k):
 
 def kmers(text, k):
     """
-    Generator to iterate over a text k-mer after k-mer
-
-    Generate n-k+1 elements with n being the size of the text
+    Generator to iterate over a text k-mer after k-mer.
+    - CASE 1: the fist param is a string, iterates through all the possible k-mers in this string.
+    Generates n-k+1 elements with n being the size of the text.
+    - CASE 2: the second param if a list of strings: iterate through all the possible k-mers in this list of strings.
+    Generates ∑(n_i-k+1) elements with n_i being the size of the i-th text.
 
     :param text: the text
     :param k: the size of the k-mers
     """
 
-    if isinstance(text, str):
+    if isinstance(text, str):  # If the text is a string
         stop = len(text) - k
         for i in range(0, stop + 1):
             yield text[i:i + k]
