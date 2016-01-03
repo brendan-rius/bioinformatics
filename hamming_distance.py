@@ -4,10 +4,13 @@ from kmer import kmers
 def hamming_distance(seq1, haystack):
     """
      - CASE 1: the second parameter is a string, return the hamming distance between the two strings.
+       Efficiency: O(n) n being the size of the strings
      - CASE 2: the second parameter is a bigger string than the first one, this will return the minimum hamming distance
     it finds between the first k-mer, and all the possible k-mers in the second string.
-     - CASE 3: the second parameter is an list of strings, it will return the sum of the hamming distances between seq1 and
-    each string in the list.
+       Efficiency: O(kn) n being the size of the first string, k the size of the second
+     - CASE 3: the second parameter is an list of strings, it will return the sum of the hamming distances between seq1
+     and each string in the list.
+       Efficiency: O(kns) n being the size of the first string, k the size of the second and s the size of the list
 
     :param seq1: the first string
     :param haystack: the second string (can be bigger than the first one), or an list of these strings
@@ -18,6 +21,8 @@ def hamming_distance(seq1, haystack):
     def hamming_distance_same_size(s1, s2):
         """
         Compute the hamming distance of two strings that have the same size.
+
+        Efficiency: O(k) with k being the size of the strings
 
         :param s1: the first string
         :param s2: the second string
@@ -37,6 +42,8 @@ def hamming_distance(seq1, haystack):
 
         Note: This method could be a bit faster and less memory-consuming if we kept the minimum distance while computing
         all the distances instead of computing all the distances first and then finding the minimum.
+
+        Efficiency: O(nk) with k being the size of the first string, and n the size of the second
 
         :param s1: the first string
         :param s2: the second string

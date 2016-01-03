@@ -9,6 +9,8 @@ def median_string(k, dna):
     :param dna: a list of DNA sequences
     :return: a k-mer that minimizes the distance between itself and the list of sequences. If multiple k-mers are found,
     return only a single one.
+
+    Efficiency: O(4^k * kns)
     """
     min_distance = (float("inf"), None)
     for pattern in all_kmers(k):
@@ -31,6 +33,7 @@ AAACGCGACTGGCCCCACGCTTCAAACAACCTAGGAAGGTAC
 TGTTAGGAGAAAACCCATACGCTGAATCGATCGGCCCGGTAC"""
     k = 6
     print(median_string(k, dna.split('\n')))
+
 
 if __name__ == '__main__':
     __main__()
