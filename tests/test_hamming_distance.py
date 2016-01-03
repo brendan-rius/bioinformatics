@@ -6,11 +6,19 @@ from hamming_distance import hamming_distance
 class TestHamming_distance(TestCase):
     def test_hamming_distance(self):
         """
-        Test the case when the strings are the same size
+        Test the case when the strings are the same size and different
         :return:
         """
         self.assertEqual(hamming_distance("TGACCCGTTATGCTCGAGTTCGGTCAGAGCGTCATTGCGAGTAGTCGTTTGCTTTCTCAAACTCC",
                                           "GAGCGATTAAGCGTGACAGCCCCAGGGAACCCACAAAACGTGATCGCAGTCCATCCGATCATACA"), 50)
+
+    def test_hamming_equal(self):
+        """
+        Test the case when the strings are the same
+        :return:
+        """
+        self.assertEqual(hamming_distance("TGACCCGTTATGCTCGAGTTCGGTCAGAGCGTCATTGCGAGTAGTCGTTTGCTTTCTCAAACTCC",
+                                          "TGACCCGTTATGCTCGAGTTCGGTCAGAGCGTCATTGCGAGTAGTCGTTTGCTTTCTCAAACTCC"), 0)
 
     def test_hamming_distance_bigger(self):
         """
