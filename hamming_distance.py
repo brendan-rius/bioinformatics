@@ -6,6 +6,10 @@ def hamming_distance(seq1, seq2):
     Compute the hamming distance between two strings.
     If the second string is bigger than the first one, this will return the minimum hamming distance it found between
     the first k-mer, and all the possible k-mers in the second string.
+
+    Note: This method could be a bit faster and less memory-consuming if we kept the minimum distance while computing
+    all the distances instead of computing all the distances first and then finding the minimum.
+
     :param seq1: the first string
     :param seq2: the second string (can be bigger than the first one)
     :return: the hamming distance between the two (an integer), or the minimum hamming distance if the second sequence
