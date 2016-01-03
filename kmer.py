@@ -28,7 +28,7 @@ def kmers(text, k):
     :return:
     """
 
-    if type(text) == 'string':
+    if isinstance(text, str):
         stop = len(text) - k
         for i in range(0, stop + 1):
             yield text[i:i + k]
