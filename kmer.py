@@ -9,23 +9,15 @@ def kmer(text, position, k):
     :param k: the size of the k-mer
     :return: the k-mer
     """
-    if position < 0:
-        raise ValueError("Position has to be positive")
-    if k < 0:
-        raise ValueError("k has to be positive")
-
-    len_text = len(text)
-    if position + k > len_text:
-        raise ValueError(
-                "Text is not long enough to find {}-mer starting at position {} in a string of length {}".format(k,
-                                                                                                                 position,
-                                                                                                                 len_text))
     return text[position:position + k]
 
 
 def all_kmers(k):
     """
-    Generate all the possible k-mers
+    Generate all the possible k-mers.
+
+    Generate 4^k elements
+
     :param k: the size of the k-mers
     """
     base = ['A', 'T', 'G', 'C']
@@ -35,10 +27,12 @@ def all_kmers(k):
 
 def kmers(text, k):
     """
-    Iterate over text k-mer after k-mer
+    Generator to iterate over a text k-mer after k-mer
+
+    Generate n-k+1 elements with n being the size of the text
+
     :param text: the text
-    :param k: the size of the kmers
-    :return:
+    :param k: the size of the k-mers
     """
 
     if isinstance(text, str):
