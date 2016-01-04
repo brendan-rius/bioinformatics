@@ -1,5 +1,6 @@
 import math
 
+from hash_kmer import hash_nucleotide
 from kmer import kmers
 from neighbors import neighbors
 
@@ -9,7 +10,7 @@ def profile(motifs):
     Compute the profile matrix of a list of motifs
     :param motifs: the list of motifs (a list of strings)
     :return: its profile matrix with each row being a motif, and each cell in the row being the probability of
-    A, T, G, C (respectively)
+    A, C, G, T (respectively)
     """
 
     def transpose(matrix):
@@ -31,19 +32,36 @@ def profile(motifs):
         """
         Return a distribution vector of the nucleotide vector
         :param vector: the vector
-        :return: (a, t, g, c) where a is the frequency of A's, t the frequency of T's, and so on
+        :return: (a, c, g, t) where a is the frequency of A's, t the frequency of T's, and so on
         """
+        # Could be faster to compute 1.0 / len(vector) and to multiply instead of dividing, but gives floating point
+        # imprecision. Probably automatically optimized anyway.
         len_vec = float(len(vector))
+
         return [
             vector.count('A') / len_vec,
-            vector.count('T') / len_vec,
+            vector.count('C') / len_vec,
             vector.count('G') / len_vec,
-            vector.count('C') / len_vec]
+            vector.count('T') / len_vec
+        ]
 
     matrix = motifs_list_to_matrix(motifs)
     transposed = transpose(matrix)
     profile_matrix = [profile_vector(v) for v in transposed]
     return profile_matrix
+
+
+def probability_from_profile(sequence, profile_matrix):
+    """
+    Compute the probability for a sequence to be generated knowing a profile matrix
+    :param sequence: the sequence to compute the probability for
+    :param profile_matrix: the profile matrix
+    :return: the probability that the given profile matrix generates this sequence
+    """
+    probability = 1
+    for nucleotide, profile_vector in zip(sequence, profile_matrix):
+        probability_of_nucleotide = profile_vector[hash_nucleotide(nucleotide)]
+        probability *= probability_of_nucleotide
 
 
 def motif_entropy(motifs):
