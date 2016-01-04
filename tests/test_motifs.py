@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from motifs import profile
+from motifs import profile, probability_from_profile
 
 
 class TestMotifs(TestCase):
@@ -34,3 +34,21 @@ class TestMotifs(TestCase):
             [0.0, 0.6, 0, 0.4]
         ]
         self.assertEqual(profile_matrix, expected_profile_matrix)
+
+    def test_probability_from_profile(self):
+        profile = [
+            [0.2, 0.1, 0, 0.7],
+            [0.2, 0.6, 0, 0.2],
+            [0, 0, 1, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0.9, 0.1],
+            [0, 0, 0.9, 0.1],
+            [0.9, 0, 0.1, 0],
+            [0.1, 0.4, 0, 0.5],
+            [0.1, 0.1, 0, 0.8],
+            [0.1, 0.2, 0, 0.7],
+            [0.3, 0.4, 0, 0.3],
+            [0.0, 0.6, 0, 0.4]
+        ]
+        kmer = "TCGGGGATTTCC"
+        self.assertEqual(probability_from_profile(kmer, profile), 0.020575296)

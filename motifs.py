@@ -62,6 +62,7 @@ def probability_from_profile(sequence, profile_matrix):
     for nucleotide, profile_vector in zip(sequence, profile_matrix):
         probability_of_nucleotide = profile_vector[hash_nucleotide(nucleotide)]
         probability *= probability_of_nucleotide
+    return probability
 
 
 def motif_entropy(motifs):
