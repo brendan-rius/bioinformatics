@@ -1,9 +1,19 @@
-def _hash_nucleotide(nucleotide):
-    return "acgt".find(nucleotide.lower())
+def hash_nucleotide(nucleotide):
+    """
+    Hash a single nucleotide
+    :param nucleotide: the nucleotide
+    :return: the hash (an integer)
+    """
+    return "ACGT".find(nucleotide)
 
 
-def _unhash_nucleotide(number):
-    return "acgt"[number]
+def unhash_nucleotide(hash):
+    """
+    Unhash a hash to a nucleotide
+    :param hash: the hashed nucleotide
+    :return: the nucleotide
+    """
+    return "ACGT"[hash]
 
 
 def hash_kmer(kmer):
@@ -17,7 +27,7 @@ def hash_kmer(kmer):
     if len_kmer == 0:
         raise ValueError("kmer cannot be null")
     elif len_kmer == 1:
-        return "acgt".find(kmer[0].lower())
+        return hash_nucleotide(kmer[0])
     return 4 * hash_kmer(kmer[:-1]) + hash_kmer(kmer[-1])
 
 
@@ -30,14 +40,8 @@ def unhash_kmer(hash, size):
     """
     kmer = ""
     while hash != 0:
-        kmer = _unhash_nucleotide(hash % 4) + kmer
+        kmer = unhash_nucleotide(hash % 4) + kmer
         hash //= 4
     len_kmer = len(kmer)
-    kmer = "a" * (size - len_kmer) + kmer  # fill with "a" until the size is correct
+    kmer = "A" * (size - len_kmer) + kmer  # fill with "a" until the size is correct
     return kmer
-
-
-def __main__():
-    kmer = "TCTGATACTCTGTGGG"
-    hash = hash_kmer(kmer)  # Hash
-    print(unhash_kmer(hash, len(kmer)).upper())  # Unhash
