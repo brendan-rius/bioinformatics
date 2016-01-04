@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from motifs import profile, probability_from_profile
+from motifs import profile, probability_from_profile, most_probable_kmer_from_profile
 
 
 class TestMotifs(TestCase):
@@ -52,3 +52,15 @@ class TestMotifs(TestCase):
         ]
         kmer = "TCGGGGATTTCC"
         self.assertEqual(probability_from_profile(kmer, profile), 0.020575296)
+
+    def test_most_probable_kmer_from_profile(self):
+        profile_matrix = [
+            (0.2, 0.4, 0.3, 0.1),
+            (0.2, 0.3, 0.3, 0.2),
+            (0.3, 0.1, 0.5, 0.1),
+            (0.2, 0.5, 0.2, 0.1),
+            (0.3, 0.1, 0.4, 0.2)
+        ]
+        k = 5
+        sequence = "ACCTGTTTATTGCCTAAGTTCCGAACAAACCCAATATAGCCCGAGGGCCT"
+        self.assertEqual(most_probable_kmer_from_profile(sequence, k, profile_matrix), "CCGAG")

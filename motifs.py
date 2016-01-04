@@ -106,6 +106,22 @@ def motif_enumeration(sequences, k, d):
     return motifs
 
 
+def most_probable_kmer_from_profile(sequence, k, profile_matrix):
+    """
+    Find the most profile-probable k-mer in a sequence
+    :param sequence: the sequence
+    :param k: the size of the k-mer
+    :param profile_matrix: the profile matrix
+    :return: the most probable k-mer in sequence according to the given profile matrix
+    """
+    most_probable = (-1, None)
+    for kmer in kmers(sequence, k):
+        probability = probability_from_profile(kmer, profile_matrix)
+        if probability > most_probable[0]:
+            most_probable = (probability, kmer)
+    return most_probable[1]
+
+
 def __main__():
     motifs = ['TCGGGGGTTTTT',
               'CCGGTGACTTAC',
