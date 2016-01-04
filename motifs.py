@@ -4,37 +4,13 @@ from kmer import kmers
 from neighbors import neighbors
 
 
-def motif_entropy(motifs):
+def profile(motifs):
     """
-    Compute the entropy of a motifs matrix
-    :param motifs: the motif matrix
-    :return: its entropy
+    Compute the profile matrix of a list of motifs
+    :param motifs: the list of motifs (a list of strings)
+    :return: its profile matrix with each row being a motif, and each cell in the row being the probability of
+    A, T, G, C (respectively)
     """
-
-    def distribution(vector):
-        """
-        Return a distribution vector of the nucleotide vector
-        :param vector: the vector
-        :return: (a, t, g, c) where a is the frequency of A's, t the frequency of T's, and so on
-        """
-        multiplier = 1 / float(len(vector))
-        return (
-            (vector.count('a') + vector.count('A')) * multiplier,
-            (vector.count('t') + vector.count('T')) * multiplier,
-            (vector.count('g') + vector.count('G')) * multiplier,
-            (vector.count('c') + vector.count('C')) * multiplier)
-
-    def entropy(vector):
-        """
-        Compute the entropy of a distribution vector
-        :param vector: the vector
-        :return: the entropy (between 0 and 2)
-        """
-        vector_entropy = 0
-        for x in vector:
-            if x != 0:  # We avoid to compute log_2(0), and we consider it to be zero
-                vector_entropy += x * math.log(x, 2)
-        return -vector_entropy
 
     def transpose(matrix):
         """
@@ -51,9 +27,46 @@ def motif_entropy(motifs):
         """
         return [list(motif) for motif in motifs]
 
+    def profile_vector(vector):
+        """
+        Return a distribution vector of the nucleotide vector
+        :param vector: the vector
+        :return: (a, t, g, c) where a is the frequency of A's, t the frequency of T's, and so on
+        """
+        len_vec = float(len(vector))
+        return [
+            vector.count('A') / len_vec,
+            vector.count('T') / len_vec,
+            vector.count('G') / len_vec,
+            vector.count('C') / len_vec]
+
     matrix = motifs_list_to_matrix(motifs)
     transposed = transpose(matrix)
-    return sum(entropy(distribution(v)) for v in transposed)
+    profile_matrix = [profile_vector(v) for v in transposed]
+    return profile_matrix
+
+
+def motif_entropy(motifs):
+    """
+    Compute the entropy of a motifs matrix
+    :param motifs: the motif matrix
+    :return: its entropy
+    """
+
+    def entropy(vector):
+        """
+        Compute the entropy of a distribution vector
+        :param vector: the vector
+        :return: the entropy (between 0 and 2)
+        """
+        vector_entropy = 0
+        for x in vector:
+            if x != 0:  # We avoid to compute log_2(0), and we consider it to be zero
+                vector_entropy += x * math.log(x, 2)
+        return -vector_entropy
+
+    profile_matrix = profile(motifs)  # We get the profile matrix for the motifs
+    return sum(entropy(v) for v in profile_matrix)  # We return the sum of entropy for all the motifs
 
 
 def motif_enumeration(sequences, k, d):
@@ -75,6 +88,20 @@ def motif_enumeration(sequences, k, d):
 
 
 def __main__():
+    motifs = ['TCGGGGGTTTTT',
+              'CCGGTGACTTAC',
+              'ACGGGGATTTTC',
+              'TTGGGGACTTTT',
+              'AAGGGGACTTCC',
+              'TTGGGGACTTCC',
+              'TCGGGGATTCAT',
+              'TCGGGGATTCCT',
+              'TAGGGGAACTAC',
+              'TCGGGTATAACC']
+    print(motif_entropy(motifs))
+
+
+def __main2__():
     sequences = """CAATTTACGGAGCCGTCTGATGTTT
 CCGACAGGCGCTACCCCTGAGACGT
 TTCCCTTCCATCTGAGAAACGCGCA
@@ -84,20 +111,6 @@ TCTTAGTTTTCCAGGTTTCCCCTGA""".split('\n')
     k = 5
     d = 1
     print(' '.join(list(motif_enumeration(sequences, k, d))))
-
-
-def __main2__():
-    motifs = ['TCGGGGgTTTtt',
-              'cCGGtGAcTTaC',
-              'aCGGGGATTTtC',
-              'TtGGGGAcTTtt',
-              'aaGGGGAcTTCC',
-              'TtGGGGAcTTCC',
-              'TCGGGGATTcat',
-              'TCGGGGATTcCt',
-              'TaGGGGAacTaC',
-              'TCGGGtATaaCC']
-    print(motif_entropy(motifs))
 
 
 if __name__ == '__main__':
