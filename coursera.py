@@ -7,4 +7,4 @@ def to_profile_matrix(text):
 
 
 def to_sequences_list(text):
-    return text.split()
+    return text.upper().split()
