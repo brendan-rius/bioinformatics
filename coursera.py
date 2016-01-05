@@ -4,3 +4,7 @@ def to_profile_matrix(text):
     """
     matrix = [[float(n) for n in row.split()] for row in text.split('\n')]
     return list(zip(*matrix))  # We transpose the matrix
+
+
+def to_sequences_list(text):
+    return text.split()
