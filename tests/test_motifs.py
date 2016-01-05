@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from motifs import profile, probability_from_profile, most_probable_kmer_from_profile
+from motifs import profile, probability_from_profile, most_probable_kmer_from_profile, greedy_motifs_search
 
 
 class TestMotifs(TestCase):
@@ -64,3 +64,15 @@ class TestMotifs(TestCase):
         k = 5
         sequence = "ACCTGTTTATTGCCTAAGTTCCGAACAAACCCAATATAGCCCGAGGGCCT"
         self.assertEqual(most_probable_kmer_from_profile(sequence, k, profile_matrix), "CCGAG")
+
+    def test_greedy_motif_search(self):
+        sequences = [
+            'GGCGTTCAGGCA',
+            'AAGAATCAGTCA',
+            'CAAGGAGTTCGC',
+            'CACGTCAATCAC',
+            'CAATAATATTCG'
+        ]
+        k = 3
+        motifs = greedy_motifs_search(sequences, k)
+        self.assertEqual(motifs, ['CAG', 'CAG', 'CAA', 'CAA', 'CAA'])

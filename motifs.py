@@ -122,6 +122,24 @@ def most_probable_kmer_from_profile(sequence, k, profile_matrix):
     return most_probable[1]
 
 
+def greedy_motifs_search(sequences, k):
+    """
+    Tries to find a collection of motifs in a collection of sequences of DNA
+    :param sequences: the collection of sequences
+    :param k: the size of the motifs to search for
+    :return: a collection of the most probable motifs (one motif for each sequence)
+    """
+    best_motifs = None
+    for motif1 in kmers(sequences[0], k):
+        motifs = [motif1]
+        for sequence in sequences[1:]:
+            profile_matrix = profile(motifs)
+            motifs.append(most_probable_kmer_from_profile(sequence, k, profile_matrix))
+        if not best_motifs or motifs_entropy(motifs) < motifs_entropy(best_motifs):
+            best_motifs = motifs
+    return best_motifs
+
+
 def __main__():
     motifs = ['TCGGGGGTTTTT',
               'CCGGTGACTTAC',
