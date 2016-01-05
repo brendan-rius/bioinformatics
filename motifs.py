@@ -65,7 +65,7 @@ def probability_from_profile(sequence, profile_matrix):
     return probability
 
 
-def motif_entropy(motifs):
+def motifs_entropy(motifs):
     """
     Compute the entropy of a motifs matrix
     :param motifs: the motif matrix
@@ -88,7 +88,7 @@ def motif_entropy(motifs):
     return sum(entropy(v) for v in profile_matrix)  # We return the sum of entropy for all the motifs
 
 
-def motif_enumeration(sequences, k, d):
+def motifs_enumeration(sequences, k, d):
     """
     Check if a motif of length k appears in each sequence in strings with at most d mismatches
     :param sequences: the array of sequences
@@ -133,7 +133,7 @@ def __main__():
               'TCGGGGATTCCT',
               'TAGGGGAACTAC',
               'TCGGGTATAACC']
-    print(motif_entropy(motifs))
+    print(motifs_entropy(motifs))
 
 
 def __main2__():
@@ -145,7 +145,7 @@ TTGGCGCAAGAAGAATCTGACATAT
 TCTTAGTTTTCCAGGTTTCCCCTGA""".split('\n')
     k = 5
     d = 1
-    print(' '.join(list(motif_enumeration(sequences, k, d))))
+    print(' '.join(list(motifs_enumeration(sequences, k, d))))
 
 
 if __name__ == '__main__':
