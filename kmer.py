@@ -31,7 +31,7 @@ def kmers(text, k):
     - CASE 1: the fist param is a string, iterates through all the possible k-mers in this string.
     Generates n-k+1 elements with n being the size of the text.
     - CASE 2: the second param if a list of strings: iterate through all the possible k-mers in this list of strings.
-    Generates ∑(n_i-k+1) elements with n_i being the size of the i-th text.
+    Generates sum(n_i-k+1) elements with n_i being the size of the i-th text.
 
     :param text: the text
     :param k: the size of the k-mers
