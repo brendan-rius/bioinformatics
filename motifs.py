@@ -5,10 +5,13 @@ from kmer import kmers
 from neighbors import neighbors
 
 
-def profile(motifs):
+def profile(motifs, cromwell=False):
     """
     Compute the profile matrix of a list of motifs
     :param motifs: the list of motifs (a list of strings)
+    :param cromwell: whether the probabilities of the profile matrix should follow Cromwell's rule (to use when
+    generating profile of small set of sequences). Will avoid to have probabilities equal to zero, but instead use small
+    numbers
     :return: its profile matrix with each row being a motif, and each cell in the row being the probability of
     A, C, G, T (respectively)
     """
@@ -28,26 +31,40 @@ def profile(motifs):
         """
         return [list(motif) for motif in motifs]
 
-    def profile_vector(vector):
+    def profile_vector(vector, cromwell):
         """
         Return a distribution vector of the nucleotide vector
         :param vector: the vector
+        :param cromwell: whether the probabilities of the profile matrix should follow Cromwell's rule (to use when
+        generating profile of small set of sequences). Will avoid to have probabilities equal to zero, but instead use small
+        numbers
         :return: (a, c, g, t) where a is the frequency of A's, t the frequency of T's, and so on
         """
-        # Could be faster to compute 1.0 / len(vector) and to multiply instead of dividing, but gives floating point
-        # imprecision. Probably automatically optimized anyway.
-        len_vec = float(len(vector))
 
-        return [
-            vector.count('A') / len_vec,
-            vector.count('C') / len_vec,
-            vector.count('G') / len_vec,
-            vector.count('T') / len_vec
-        ]
+        if cromwell:
+            # Here we add 4 to the length of the vector, because we fake that every nucleotide appeared at least once
+            # (to avoid null probabilities).
+            len_vec = float(len(vector) + 4)
+            return [
+                (vector.count('A') + 1) / len_vec,
+                (vector.count('C') + 1) / len_vec,
+                (vector.count('G') + 1) / len_vec,
+                (vector.count('T') + 1) / len_vec
+            ]
+        else:
+            # Could be faster to compute 1.0 / len(vector) and to multiply instead of dividing, but gives floating point
+            # imprecision. Probably automatically optimized anyway.
+            len_vec = float(len(vector))
+            return [
+                vector.count('A') / len_vec,
+                vector.count('C') / len_vec,
+                vector.count('G') / len_vec,
+                vector.count('T') / len_vec
+            ]
 
     matrix = motifs_list_to_matrix(motifs)
     transposed = transpose(matrix)
-    profile_matrix = [profile_vector(v) for v in transposed]
+    profile_matrix = [profile_vector(v, cromwell) for v in transposed]
     return profile_matrix
 
 

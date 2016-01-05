@@ -4,7 +4,7 @@ from motifs import profile, probability_from_profile, most_probable_kmer_from_pr
 
 
 class TestMotifs(TestCase):
-    def test_profile(self):
+    def test_profile_no_cromwell(self):
         """
         Try to create a profile matrix from a list of motifs
         """
@@ -33,6 +33,21 @@ class TestMotifs(TestCase):
             [0.3, 0.4, 0, 0.3],
             [0.0, 0.6, 0, 0.4]
         ]
+        self.assertEqual(profile_matrix, expected_profile_matrix)
+
+    def test_profile_cromwell(self):
+        """
+        Try to create a profile matrix from a list of motifs
+        """
+        motifs = ['ACCT', 'ATGT', 'ACGG', 'ACGA']
+        profile_matrix = profile(motifs, True)
+        expected_profile_matrix = [
+            [0.625, 0.125, 0.125, 0.125],
+            [0.125, 0.5, 0.125, 0.25],
+            [0.125, 0.25, 0.5, 0.125],
+            [0.25, 0.125, 0.25, 0.375]
+        ]
+        print(profile_matrix)
         self.assertEqual(profile_matrix, expected_profile_matrix)
 
     def test_probability_from_profile(self):
