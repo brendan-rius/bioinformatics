@@ -158,6 +158,21 @@ def greedy_motifs_search(sequences, k, cromwell=True):
     return best_motifs
 
 
+def motifs(profile, sequences):
+    """
+    Get the profile-most probable motifs in a list of sequences
+    :param profile: the profile matrix
+    :param sequences: some sequences of DNA
+    :return: a list of the profile most probable motifs in the sequences according
+    """
+
+    k = len(profile)  # The profile matrix has the same length as the researched k-mer
+    result = []
+    for sequence in sequences:
+        result.append(most_probable_kmer_from_profile(sequence, k, profile))
+    return result
+
+
 def __main__():
     motifs = ['TCGGGGGTTTTT',
               'CCGGTGACTTAC',

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from motifs import profile, probability_from_profile, most_probable_kmer_from_profile, greedy_motifs_search
+from motifs import profile, probability_from_profile, most_probable_kmer_from_profile, greedy_motifs_search, motifs
 
 
 class TestMotifs(TestCase):
@@ -145,3 +145,23 @@ TCATATTAATTGACCTCAACCACATCTCTTTAAGACGATTACCATAGCGGTCAAGTCAACGACGAGATTCCCCGGCGTCA
                                   'GGCGCAATCCCC',
                                   'GGCGTTATCCCC',
                                   'GACGAGATTCCC'])
+
+    def test_motifs(self):
+        # If we test with a matrix filled with zeros, it wont find 'ATA' because there would be a zero probability for
+        # the 'T' to appear. Instead we follow Cromwell's rule, and avoid zeros and use small numbers instead
+        profile = [
+            [0.97, 0.01, 0.01, 0.01],
+            [0.97, 0.01, 0.01, 0.01],
+            [0.97, 0.01, 0.01, 0.01],
+        ]
+        sequences = [
+            'ATGCAAATGC',
+            'ATGCATATGC',
+            'ATGCAAATGC'
+        ]
+        expected_motifs = [
+            'AAA',
+            'ATA',
+            'AAA',
+        ]
+        self.assertEqual(motifs(profile, sequences), expected_motifs)
