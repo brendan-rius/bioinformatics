@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from motifs import profile, probability_from_profile, most_probable_kmer_from_profile, greedy_motifs_search, motifs
+from motifs import profile, probability_from_profile, most_probable_kmer_from_profile, greedy_motifs_search, motifs, \
+    randomized_motifs_search
 
 
 class TestMotifs(TestCase):
@@ -165,3 +166,17 @@ TCATATTAATTGACCTCAACCACATCTCTTTAAGACGATTACCATAGCGGTCAAGTCAACGACGAGATTCCCCGGCGTCA
             'AAA',
         ]
         self.assertEqual(motifs(profile, sequences), expected_motifs)
+
+    def test_randomized_motifs_search(self):
+        """
+        Might fail because of randomness, so run it mutliple time if not sure
+        """
+        sequences = ['CGCCCCTCTCGGGGGTGTTCAGTAAACGGCCA',
+                     'GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG',
+                     'TAGTACCGAGACCGAAAGAAGTATACAGGCGT',
+                     'TAGATCAAGTTTCAGGTGCACGTCGGTGAACC',
+                     'AATCCACCAGCTCCACGTGCAATGTTGGCCTA']
+
+        k = 8
+        self.assertEqual(randomized_motifs_search(sequences, k, 5000),
+                         ['GTAAACGG', 'GTGTAAGT', 'GTATACAG', 'GTGCACGT', 'GTGCAATG'])

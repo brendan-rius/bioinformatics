@@ -1,4 +1,5 @@
 import math
+import random
 
 from hash_kmer import hash_nucleotide
 from kmer import kmers
@@ -158,6 +159,61 @@ def greedy_motifs_search(sequences, k, cromwell=True):
     return best_motifs
 
 
+def randomized_motifs_search(sequences, k, n=1, cromwell=True):
+    """
+    Tries to find a list of motifs in a list of sequences of DNA. Tries to smooth the results by running multiple times
+    This is a Monte Carlo algorithm.
+    :param sequences: the list of sequences
+    :param k: the size of the motifs to search for
+    :param n: the number of times to run the search (set higher for better results)
+    :param cromwell: should we use Cromwell's rule when generating the profile matrix?
+    :return: a probable list of the most-probable motifs
+    """
+
+    def random_motifs(sequences, k):
+        """
+        Generate a random list of motifs of length k from a list of sequences
+        :param sequences: the sequences
+        :param k: the length of the desired motifs
+        :return: a random list of motifs
+        """
+        result = []
+        for sequence in sequences:
+            index = random.randint(0, len(sequence) - k)
+            result.append(sequence[index:index + k])
+        return result
+
+    def single_randomized_motifs_search(sequences, k, cromwell=True):
+        """
+        Tries to find a list of motifs in a list of sequences of DNA.
+        This is a Monte Carlo algorithm.
+        :param sequences: the list of sequences
+        :param k: the size of the motifs to search for
+        :param cromwell: should we use Cromwell's rule when generating the profile matrix?
+        :return: a probable list of the most-probable motifs
+        """
+        motifs_list = random_motifs(sequences, k)  # The first list of motifs is randomly sampled from the sequences
+        best_motifs = (motifs_entropy(motifs_list), motifs_list)  # (entropy_of_motifs, list_of_motifs)
+        while True:  # This algorithm will terminate when the entropy stops improving
+            motifs_profile = profile(best_motifs[1], cromwell)  # We get the profile of the current motifs
+            motifs_list = motifs(motifs_profile, sequences)  # We generate a new list of motifs based on the profile
+            entropy = motifs_entropy(motifs_list)  # We compute the entropy of the new list
+            # If the entropy is better, we have a new best motifs list
+            if entropy < best_motifs[0]:
+                best_motifs = (entropy, motifs_list)
+            # If the entropy is worse, we it is probable that it only worsen so we stop here. It the entropy is the
+            # same, we stop too (we do not want to run into an infinite loop)
+            else:
+                return best_motifs
+
+    best_motifs = single_randomized_motifs_search(sequences, k, cromwell)
+    for i in range(0, n - 1):  # n - 1, because we already performed a first search
+        next_motifs = single_randomized_motifs_search(sequences, k, cromwell)
+        if next_motifs[0] < best_motifs[0]:  # If the entropy is better, we have a new best motifs list
+            best_motifs = next_motifs
+    return best_motifs[1]  # We return only the list of motifs, not the entropy
+
+
 def motifs(profile, sequences):
     """
     Get the profile-most probable motifs in a list of sequences
@@ -171,33 +227,3 @@ def motifs(profile, sequences):
     for sequence in sequences:
         result.append(most_probable_kmer_from_profile(sequence, k, profile))
     return result
-
-
-def __main__():
-    motifs = ['TCGGGGGTTTTT',
-              'CCGGTGACTTAC',
-              'ACGGGGATTTTC',
-              'TTGGGGACTTTT',
-              'AAGGGGACTTCC',
-              'TTGGGGACTTCC',
-              'TCGGGGATTCAT',
-              'TCGGGGATTCCT',
-              'TAGGGGAACTAC',
-              'TCGGGTATAACC']
-    print(motifs_entropy(motifs))
-
-
-def __main2__():
-    sequences = """CAATTTACGGAGCCGTCTGATGTTT
-CCGACAGGCGCTACCCCTGAGACGT
-TTCCCTTCCATCTGAGAAACGCGCA
-ACTGACAAATCAGCCAAGTCTCTAG
-TTGGCGCAAGAAGAATCTGACATAT
-TCTTAGTTTTCCAGGTTTCCCCTGA""".split('\n')
-    k = 5
-    d = 1
-    print(' '.join(list(motifs_enumeration(sequences, k, d))))
-
-
-if __name__ == '__main__':
-    __main__()
