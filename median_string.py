@@ -20,6 +20,24 @@ def median_string(k, dna):
     return min_distance[1]
 
 
+def median_strings(k, dna):
+    """
+    Find all k-mers x that minimizes the HammingDistance(x, dna)
+    :param k: the size of the k-mer to find
+    :param dna: a list of DNA sequences
+    :return: all k-mer that minimizes the distance between themselves and the list of sequences
+
+    Efficiency: O(4^k * kns)
+    """
+    result = {}
+    for pattern in all_kmers(k):
+        distance = hamming_distance(pattern, dna)
+        result[pattern] = distance
+    min_value = min(result.values())
+    mins = [sequence for sequence, value in result.items() if value == min_value]
+    return mins
+
+
 def __main__():
     dna = """AGGTACTATCAGTAAAAAGGTTGAACATTTGGTGCGATAGCG
 TCAACTCGGTACGCGCATAGCAGGGCAGTTGTACGGGGTGCC
