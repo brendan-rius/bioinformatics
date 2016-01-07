@@ -40,9 +40,6 @@ def hamming_distance(seq1, haystack):
         If the second string if bigger than the first one, this will return the minimum hamming distance it finds
         between the first k-mer, and all the possible k-mers in the second string.
 
-        Note: This method could be a bit faster and less memory-consuming if we kept the minimum distance while computing
-        all the distances instead of computing all the distances first and then finding the minimum.
-
         Efficiency: O(nk) with k being the size of the first string, and n the size of the second
 
         :param s1: the first string
@@ -50,10 +47,16 @@ def hamming_distance(seq1, haystack):
         :return:
         """
         k = len(s1)
+
+        min_distance = float("inf")
+
         # We compute the hamming distance between seq1 and s for s being all the possibles strings the same size as seq1
         # in seq2.
-        distances = [hamming_distance_same_size(s1, s) for s in kmers(s2, k)]
-        return min(distances)  # We return the minimum found hamming distance
+        for s in kmers(s2, k):
+            distance = hamming_distance_same_size(s1, s)
+            if distance < min_distance[0]:  # If the current newly found distance is lower than the minimum we have now
+                min_distance = distance
+        return min_distance
 
     if isinstance(haystack, list):  # If the second parameters is a list
         return sum([hamming_distance_two_strings(seq1, s) for s in haystack])
