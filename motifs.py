@@ -1,7 +1,8 @@
 import math
 import random
 
-from hash_kmer import hash_nucleotide
+from hamming_distance import hamming_distance
+from hash_kmer import hash_nucleotide, unhash_nucleotide
 from kmer import kmers
 from neighbors import neighbors
 
@@ -138,6 +139,33 @@ def most_probable_kmer_from_profile(sequence, k, profile_matrix):
         if probability > most_probable[0]:
             most_probable = (probability, kmer)
     return most_probable[1]
+
+
+def consensus(motifs):
+    """
+    Return the consensus string from a list of sequences
+    :param motifs: the lost of sequences
+    :return: the consensus string
+    """
+    result = ""
+    profile_motifs = profile(motifs)
+    for distribution in profile_motifs:
+        index = distribution.index(max(distribution))
+        result += unhash_nucleotide(index)
+    return result
+
+
+def score(motifs):
+    """
+    Score a list of motifs found in sequences. The lower the score the better.
+    This is done by computing the consensus string of the motifs, and computing the hamming distance between this
+    string and the list of sequences.
+    :param motifs: the motifs to score found in sequences
+    :param sequences: the sequences
+    :return: a score in [0; +inf[, the lower being the better
+    """
+    motifs_consensus = consensus(motifs)
+    return hamming_distance(motifs_consensus, motifs)
 
 
 def greedy_motifs_search(sequences, k, cromwell=True):
