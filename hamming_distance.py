@@ -54,7 +54,7 @@ def hamming_distance(seq1, haystack):
         # in seq2.
         for s in kmers(s2, k):
             distance = hamming_distance_same_size(s1, s)
-            if distance < min_distance[0]:  # If the current newly found distance is lower than the minimum we have now
+            if distance < min_distance:  # If the current newly found distance is lower than the minimum we have now
                 min_distance = distance
         return min_distance
 
