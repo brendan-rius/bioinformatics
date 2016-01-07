@@ -18,4 +18,4 @@ class TestMedianString(TestCase):
                'CAAAAGCGTTTG',
                'GCTTTGACAAAC',
                'AGTTTCGGAAAG']
-        self.assertEqual(median_strings(3, dna), ['TTT', 'AAA'])
+        self.assertEqual(set(median_strings(3, dna)), {'TTT', 'AAA'})
