@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from motifs import profile, probability_from_profile, most_probable_kmer_from_profile, greedy_motifs_search, motifs, \
-    randomized_motifs_search, consensus, score
+    randomized_motifs_search, consensus, score, biased_random, profile_random_kmer
 
 
 class TestMotifs(TestCase):
@@ -210,3 +210,24 @@ TCATATTAATTGACCTCAACCACATCTCTTTAAGACGATTACCATAGCGGTCAAGTCAACGACGAGATTCCCCGGCGTCA
             'CATAATGAACTGTGA'
         ]
         self.assertEqual(score(sequences), 43)
+
+    def test_biased_random(self):
+        sequence = tuple(range(10))  # The sequence is (0, 1, ..., 9)
+        picks = [biased_random(sequence) for i in range(10000)]
+        counts = [picks.count(i) for i in sequence]  # We count the occurrences of each number of the sequence
+        # It should be sorted since 1 should appear less frequently than 2, and 2 than 3, ...
+        self.assertEqual(sorted(counts), counts)
+
+    def test_profile_random_kmer(self):
+        profile = [
+            [0.97, 0.01, 0.01, 0.01],
+            [0.97, 0.01, 0.01, 0.01],
+            [0.49, 0.01, 0.01, 0.49],
+            [0.97, 0.01, 0.01, 0.01],
+        ]  # Profile for "AAAA" or "AATA", according to Cromwell's rule
+        sequence1 = "ATGCATGCATGCAATAATGCATGCGCTAGATC"  # AATA is contained in the string
+        sequence2 = "ATGCATGCATGCAAAATGCATGCGCTAGATC"  # AAAA is contained in the string
+        random_kmer1 = profile_random_kmer(profile, sequence1)
+        random_kmer2 = profile_random_kmer(profile, sequence2)
+        self.assertEqual(random_kmer1, "AATA")
+        self.assertEqual(random_kmer2, "AAAA")

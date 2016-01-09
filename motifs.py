@@ -1,5 +1,7 @@
 import math
 import random
+from bisect import bisect
+from itertools import accumulate
 
 from hamming_distance import hamming_distance
 from hash_kmer import hash_nucleotide, unhash_nucleotide
@@ -255,3 +257,43 @@ def motifs(profile, sequences):
     for sequence in sequences:
         result.append(most_probable_kmer_from_profile(sequence, k, profile))
     return result
+
+
+def biased_random(sequence):
+    """
+    Return a random index from the sequence, biased by the numbers in the sequence
+    :param sequence: the sequence of probabilities. If it does not sum to one, it will be adjusted accordingly.
+    :return: an index in the sequence
+    """
+
+    def sequence_to_distribution(sequence):
+        """
+        Transform a list of integers in [0; +inf[ to a probability distribution that sums to 1
+        :param sequence:
+        :return:
+        """
+        multiplier = 1.0 / sum(sequence)  # We use multiplication instead of division
+        return [x * multiplier for x in sequence]
+
+    if sequence not in biased_random.cache:  # If the accumulated distribution is stored in cache
+        distribution = sequence_to_distribution(sequence)  # We normalize the sequence
+        biased_random.cache[sequence] = list(accumulate(distribution))  # We store the accumulated distribution
+    dist = biased_random.cache[sequence]
+    return bisect(dist, random.uniform(0, dist[-1]))
+
+
+biased_random.cache = {}  # Cache for biased random
+
+
+def profile_random_kmer(profile, sequence):
+    """
+    Generate a profile-randomly chosen k-mer in a sequence.
+    The size of the kmer will be deducted from profile.
+    :param profile: the profile
+    :param sequence: the sequence to search in
+    :return:
+    """
+    k = len(profile)
+    distribution = tuple(probability_from_profile(kmer, profile) for kmer in kmers(sequence, k))
+    index = biased_random(distribution)
+    return sequence[index:index + k]
