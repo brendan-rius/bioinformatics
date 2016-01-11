@@ -231,8 +231,7 @@ def randomized_motifs_search(sequences, k, n=1, cromwell=True):
             # If the entropy is better, we have a new best motifs list
             if entropy < best_motifs[0]:
                 best_motifs = (entropy, motifs_list)
-            # If the entropy is worse, we it is probable that it only worsen so we stop here. It the entropy is the
-            # same, we stop too (we do not want to run into an infinite loop)
+            # If the entropy does not get better, we stop because we do not want to run into an infinite loop
             else:
                 return best_motifs
 
