@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from motifs import profile, probability_from_profile, most_probable_kmer_from_profile, greedy_motifs_search, motifs, \
-    randomized_motifs_search, consensus, score, biased_random, profile_random_kmer
+    randomized_motifs_search, consensus, score, biased_random, profile_random_kmer, gibbs_motifs_search
 
 
 class TestMotifs(TestCase):
@@ -231,3 +231,15 @@ TCATATTAATTGACCTCAACCACATCTCTTTAAGACGATTACCATAGCGGTCAAGTCAACGACGAGATTCCCCGGCGTCA
         random_kmer2 = profile_random_kmer(profile, sequence2)
         self.assertEqual(random_kmer1, "AATA")
         self.assertEqual(random_kmer2, "AAAA")
+
+    def test_gibbs_motifs_search(self):
+        sequences = [
+            'CGCCCCTCTCGGGGGTGTTCAGTAACCGGCCA',
+            'GGGCGAGGTATGTGTAAGTGCCAAGGTGCCAG',
+            'TAGTACCGAGACCGAAAGAAGTATACAGGCGT',
+            'TAGATCAAGTTTCAGGTGCACGTCGGTGAACC',
+            'AATCCACCAGCTCCACGTGCAATGTTGGCCTA'
+        ]
+        motifs = gibbs_motifs_search(sequences, k=8, n=100, N=20)
+        print('\n'.join(motifs))
+        self.assertLessEqual(score(motifs), 9)
