@@ -343,7 +343,7 @@ def profile_random_kmer(profile, sequence):
     return sequence[index:index + k]
 
 
-def gibbs_motifs_search(sequences, k, n, N=1, cromwell=True):
+def gibbs_motifs_search(sequences, k, n, N=1, cromwell=True, score=motifs_entropy):
     """
     Tries to find a list of repeated motifs in a list of sequences.
     This is a Monte Carlo algorithm, but it is different from randomized_motifs_search because it uses
@@ -352,10 +352,12 @@ def gibbs_motifs_search(sequences, k, n, N=1, cromwell=True):
     :param k: the wanted size of the motifs
     :param n: the number of iterations
     :param N: the number of time ro run the algorithm
+    :param score: the scoring function to rate motifs. This function should return a number in [0; +inf[, going towards
+    0 as the motifs improve
     :return: a list of repeated motifs
     """
 
-    def single_gibbs_motifs_search(sequences, k, n, cromwell=True):
+    def single_gibbs_motifs_search(sequences, k, n, cromwell=True, score=motifs_entropy):
         """
         Tries to find a list of repeated motifs in a list of sequences.
         This is a Monte Carlo algorithm, but it is different from randomized_motifs_search because it uses
@@ -363,11 +365,13 @@ def gibbs_motifs_search(sequences, k, n, N=1, cromwell=True):
         :param sequences: ths list of sequences
         :param k: the wanted size of the motifs
         :param n: the number of iterations
+        :param score: the scoring function to rate motifs. This function should return a number in [0; +inf[, going towards
+    0 as the motifs improve
         :return: a list of repeated motifs
         """
         motifs_list = random_motifs(sequences, k)  # The first list of motifs is randomly sampled from the sequences
         number_of_motifs = len(motifs_list)
-        best_motifs = (motifs_entropy(motifs_list), motifs_list)  # (entropy_of_motifs, list_of_motifs)
+        best_motifs = (score(motifs_list), motifs_list)  # (score_of_motifs, list_of_motifs)
         for j in range(n):
             index = random.randint(0, number_of_motifs - 1)  # We choose one of the motifs
             # All the motifs, except the chosen one
@@ -377,14 +381,14 @@ def gibbs_motifs_search(sequences, k, n, N=1, cromwell=True):
             motifs_profile = profile(motifs_except_chosen, cromwell)
             # We replace the chosen motif bu a new one which is "randomly" selected but biased by the profile
             motifs_list[index] = profile_random_kmer(motifs_profile, sequences[index])
-            entropy = motifs_entropy(motifs_list)
-            if entropy < best_motifs[0]:  # If the entropy of the new motifs list is better than the current best
-                best_motifs = (entropy, list(motifs_list))
+            s = score(motifs_list)
+            if s < best_motifs[0]:  # If the scor of the new motifs list is better than the current best
+                best_motifs = (s, list(motifs_list))
         return best_motifs
 
-    best_motifs = single_gibbs_motifs_search(sequences, k, n, cromwell)
+    best_motifs = single_gibbs_motifs_search(sequences, k, n, cromwell, score=score)
     for i in range(0, N - 1):  # N - 1, because we already performed a first search
-        next_motifs = single_gibbs_motifs_search(sequences, k, n, cromwell)
-        if next_motifs[0] < best_motifs[0]:  # If the entropy is better, we have a new best motifs list
+        next_motifs = single_gibbs_motifs_search(sequences, k, n, cromwell, score=score)
+        if next_motifs[0] < best_motifs[0]:  # If the score is better, we have a new best motifs list
             best_motifs = next_motifs
-    return best_motifs[1]  # We return only the list of motifs, not the entropy
+    return best_motifs[1]  # We return only the list of motifs, not the score
