@@ -11,7 +11,24 @@ from neighbors import neighbors
 
 def profile(motifs, cromwell=False):
     """
-    Compute the profile matrix of a list of motifs
+    Compute the profile matrix of a list of motifs.
+
+    Example:
+    ['ATGCT',
+     'AAGCC']
+    becomes
+    [[2/2, 0/2, 0/2, 0/2],
+     [1/2, 0/2, 0/2, 1/2]
+     [0/2, 0/2, 2/2, 0/2]
+     [0/2, 2/2, 0/2, 0/2]
+     [0/2, 1/2, 0/2, 1/2]] (without cromwell)
+    or
+    [[3/6, 1/6, 1/6, 1/6],
+     [2/6, 1/6, 1/6, 2/6]
+     [1/6, 1/6, 3/6, 1/6]
+     [1/6, 3/6, 1/6, 1/6]
+     [1/6, 2/6, 1/6, 2/6]]  (with cromwell)
+
     :param motifs: the list of motifs (a list of strings)
     :param cromwell: whether the probabilities of the profile matrix should follow Cromwell's rule (to use when
     generating profile of small set of sequences). Will avoid to have probabilities equal to zero, but instead use small
@@ -25,7 +42,7 @@ def profile(motifs, cromwell=False):
         Transpose a matrix
 
         Example:
-        [['A', 'T', 'G', 'C', 'T"],
+        [['A', 'T', 'G', 'C', 'T'],
          ['A', 'A', 'G', 'C', 'C']]
         becomes
         [['A', 'A'],
@@ -59,14 +76,11 @@ def profile(motifs, cromwell=False):
         Return a distribution vector of the nucleotide vector
 
         Example:
-        [['A', 'T', 'G', 'C', 'T"],
-         ['A', 'A', 'G', 'C', 'C']]
+        ['T', 'A']
         becomes
-        [(1/5, 1/5, 1/5, 2/5),
-         (1/5, 2/5, 1/5, 1/5)]  (without cromwell)
+        [1/2, 0, 0, 1/2] (without cromwell)
         or
-        [(2/9, 2/9, 2/9, 3/9),
-         (2/9, 3/9, 2/9, 2/9)]  (with cromwell)
+        [2/6, 1/6, 1/6, 2/6] (with cromwell)
 
         :param vector: the vector
         :param cromwell: whether the probabilities of the profile matrix should follow Cromwell's rule (to use when
