@@ -47,7 +47,7 @@ def profile(motifs, cromwell=False):
         ['ATGCT',
          'AAGCC']
         becomes
-        [['A', 'T', 'G', 'C', 'T"],
+        [['A', 'T', 'G', 'C', 'T'],
          ['A', 'A', 'G', 'C', 'C']]
 
         :return: the matrix
