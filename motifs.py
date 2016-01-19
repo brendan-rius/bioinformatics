@@ -23,26 +23,51 @@ def profile(motifs, cromwell=False):
     def transpose(matrix):
         """
         Transpose a matrix
+
+        Example:
+        [['A', 'T', 'G', 'C', 'T"],
+         ['A', 'A', 'G', 'C', 'C']]
+        becomes
+        [['A', 'A'],
+         ['T', 'A'],
+         ['G', 'G'],
+         ['C', 'C'],
+         ['T', 'C']]
+
         :param matrix: the matrix
         :return: the transposed matrix
         """
-        return zip(*matrix)
+        return list(zip(*matrix))
 
     def motifs_list_to_matrix(motifs):
         """
         Transform a motif list to a matrix.
+
+        Example:
         ['ATGCT',
          'AAGCC']
         becomes
         [['A', 'T', 'G', 'C', 'T"],
          ['A', 'A', 'G', 'C', 'C']]
-        :return:
+
+        :return: the matrix
         """
         return [list(motif) for motif in motifs]
 
     def profile_vector(vector, cromwell):
         """
         Return a distribution vector of the nucleotide vector
+
+        Example:
+        [['A', 'T', 'G', 'C', 'T"],
+         ['A', 'A', 'G', 'C', 'C']]
+        becomes
+        [(1/5, 1/5, 1/5, 2/5),
+         (1/5, 2/5, 1/5, 1/5)]  (without cromwell)
+        or
+        [(2/9, 2/9, 2/9, 3/9),
+         (2/9, 3/9, 2/9, 2/9)]  (with cromwell)
+
         :param vector: the vector
         :param cromwell: whether the probabilities of the profile matrix should follow Cromwell's rule (to use when
         generating profile of small set of sequences). Will avoid to have probabilities equal to zero, but instead use small
