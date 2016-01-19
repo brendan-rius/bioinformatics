@@ -31,11 +31,11 @@ def profile(motifs, cromwell=False):
     def motifs_list_to_matrix(motifs):
         """
         Transform a motif list to a matrix.
-        ['ATGC',
-         'AAGC']
+        ['ATGCT',
+         'AAGCC']
         becomes
-        [['A', 'T', 'G', 'C'],
-         ['A', 'A', 'G', 'C']]
+        [['A', 'T', 'G', 'C', 'T"],
+         ['A', 'A', 'G', 'C', 'C']]
         :return:
         """
         return [list(motif) for motif in motifs]
